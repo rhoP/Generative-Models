@@ -59,32 +59,36 @@ for images, targets in train_loader:
     tv_norm_batch = batch_total_variation_norm(images)
 
     # More features
-    flat_images = images.view(images.size(0), -1)
+    # flat_images = images.view(images.size(0), -1)
 
-    combined_features = torch.cat((tv_norm_batch.view(-1, 1), flat_images), dim=1)
+    # combined_features = torch.cat((tv_norm_batch.view(-1, 1), flat_images), dim=1)
 
-    features.append(combined_features.cpu().numpy())  # Move back to CPU for further processing
-    labels.append(targets.cpu().numpy())
+    # features.append(combined_features.cpu().numpy())  # Move back to CPU for further processing
+    features.append(tv_norm_batch.view(-1).cpu().numpy())
+    labels.append(targets.view(-1).cpu().numpy())
 
 # Convert the results to numpy arrays for clustering
-print("converting results to numpy array")
+# print("converting results to numpy array")
 # Convert the results to numpy arrays for clustering
 features = np.concatenate(features)
+labels = np.concatenate(labels)
 
 # Clustering using KMeans
-kmeans = KMeans(n_clusters=10, random_state=42)
-cluster_labels = kmeans.fit_predict(features)
+# kmeans = KMeans(n_clusters=10, random_state=42)
+# cluster_labels = kmeans.fit_predict(features)
 
 # Dimensionality Reduction for Visualization (t-SNE)
-print("clustering done")
-tsne = TSNE(n_components=2, random_state=42)
-tsne_result = tsne.fit_transform(features)
-
+# print("clustering done")
+# tsne = TSNE(n_components=2, random_state=42)
+# tsne_result = tsne.fit_transform(features)
+print("shapes: ", len(features), len(labels), "\t", features[0])
 # Plot the clusters
 plt.figure(figsize=(10, 8))
-scatter = plt.scatter(tsne_result[:, 0], tsne_result[:, 1], c=cluster_labels, cmap='tab10', s=5)
+# scatter = plt.scatter(tsne_result[:, 0], tsne_result[:, 1], c=cluster_labels, cmap='tab10', s=5)
+scatter = plt.scatter(features, labels, c=labels, cmap='tab10', s=5)
+plt.plot
 plt.colorbar(scatter, ticks=range(10))
-plt.title("MNIST Clusters (Using Total Variation Norm and KMeans on GPU)")
-plt.xlabel("t-SNE Component 1")
-plt.ylabel("t-SNE Component 2")
+plt.title("MNIST Clusters")
+plt.xlabel("norms")
+plt.ylabel("labels")
 plt.show()

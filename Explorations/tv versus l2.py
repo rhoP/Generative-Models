@@ -63,7 +63,7 @@ for images, targets in train_loader:
 features = np.concatenate(features)
 labels = np.concatenate(labels)
 
-# Clustering using KMeans
+# Explorations using KMeans
 kmeans = KMeans(n_clusters=10, random_state=42)
 cluster_labels = kmeans.fit_predict(features)
 
